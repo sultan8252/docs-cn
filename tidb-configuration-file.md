@@ -1,6 +1,6 @@
 ---
 title: TiDB 配置文件描述
-aliases: ['/docs-cn/stable/tidb-configuration-file/','/docs-cn/v4.0/tidb-configuration-file/','/docs-cn/stable/reference/configuration/tidb-server/configuration-file/']
+aliases: ['/docs-cn/stable/tidb-configuration-file/','/docs-cn/v4.0/tidb-configuration-file/','/docs-cn/stable/reference/configuration/tidb-server/configuration-file/','/docs-cn/v4.0/reference/configuration/tidb-server/configuration']
 ---
 
 <!-- markdownlint-disable MD001 -->
@@ -55,11 +55,6 @@ TiDB 配置文件比命令行参数支持更多的选项。你可以在 [config/
 + 当 TiDB 中单条 SQL 的内存使用超出 `mem-quota-query` 限制且不能再利用临时磁盘时的行为。
 + 默认值："log"
 + 目前合法的选项为 ["log", "cancel"]。设置为 "log" 时，仅输出日志。设置为 "cancel" 时，取消执行该 SQL 操作，并输出日志。
-
-### `enable-streaming`
-
-+ 开启 coprocessor 的 streaming 获取数据模式。
-+ 默认值：false
 
 ### `lower-case-table-names`
 
@@ -148,6 +143,11 @@ TiDB 配置文件比命令行参数支持更多的选项。你可以在 [config/
 ## log
 
 日志相关的配置项。
+
+### `level`
+
++ 指定日志的输出级别, 可选项为 [debug, info, warn, error, fatal]
++ 默认值："info"
 
 ### `format`
 
@@ -282,6 +282,24 @@ TiDB 配置文件比命令行参数支持更多的选项。你可以在 [config/
 + Prepare cache LRU 使用的最大内存限制。当 Prepare cache LRU 的内存使用超过 `performance.max-memory * (1 - prepared-plan-cache.memory-guard-ratio)` 时，会剔除 LRU 中的元素。
 + 默认值：0
 + 这个配置只有在 `prepared-plan-cache.enabled` 为 `true` 的情况才会生效。当 LRU 的 size 大于 `prepared-plan-cache.capacity` 时，也会剔除 LRU 中的元素。
+
+### `server-memory-quota`
+
+> **警告：**
+>
+> `server-memory-quota` 目前为实验性特性，不建议在生产环境中使用。
+
++ tidb-server 实例内存的使用限制，单位为字节。
++ 默认值：0
++ 默认值为 0 表示无内存限制。
+
+### `memory-usage-alarm-ratio`
+
++ tidb-server 实例内存使用占总内存的比例超过一定阈值时会报警。该配置项的有效范围为 `0` 到 `1`。如果配置该选项为 `0` 或 `1`，则表示关闭内存阈值报警功能。
++ 默认值：0.8
++ 当内存阈值报警功能开启时，如果配置项 [`server-memory-quota`](/tidb-configuration-file.md#server-memory-quota) 未设置，则内存报警阈值为 `memory-usage-alarm-ratio * 系统内存大小`；如果 `server-memory-quota` 被设置且大于 0，则内存报警阈值为 `memory-usage-alarm-ratio * server-memory-quota`。
++ 当 TiDB 检测到 tidb-server 实例的内存使用超过了阈值，则会认为存在内存溢出的风险，会将当前正在执行的所有 SQL 语句中内存使用最高的 10 条语句和运行时间最长的 10 条语句以及 heap profile 记录到目录 [`tmp-storage-path/record`](/tidb-configuration-file.md#tmp-storage-path) 中，并输出一条包含关键字 `tidb-server has the risk of OOM` 的日志。
++ 该值作为系统变量 [`tidb_memory_usage_alarm_ratio`](/system-variables.md#tidb_memory_usage_alarm_ratio) 的初始值。
 
 ### `txn-total-size-limit`
 
@@ -445,13 +463,13 @@ prepare 语句的 Plan cache 设置。
 ### `capacity-mb`
 
 + 缓存的总数据量大小。当缓存空间满时，旧缓存条目将被逐出。
-+ 默认值：1000
++ 默认值：1000.0
 + 单位：MB
 
 ### `admission-max-result-mb`
 
 + 指定能被缓存的最大单个下推计算结果集。若单个下推计算在 Coprocessor 上返回的结果集大于该参数指定的大小，则结果集不会被缓存。调大该值可以缓存更多种类下推请求，但也将导致缓存空间更容易被占满。注意，每个下推计算结果集大小一般都会小于 Region 大小，因此将该值设置得远超过 Region 大小没有意义。
-+ 默认值：10
++ 默认值：10.0
 + 单位：MB
 
 ### `admission-min-process-ms`
@@ -548,12 +566,6 @@ TiDB 服务状态相关配置。
 ## experimental
 
 experimental 部分为 TiDB 实验功能相关的配置。该部分从 v3.1.0 开始引入。
-
-### `allow-auto-random` <span class="version-mark">从 v3.1.0 版本开始引入</span>
-
-+ 用于控制是否允许使用 `AUTO_RANDOM`。
-+ 默认值：false
-+ 默认情况下，不支持使用 `AUTO_RANDOM`。当该值为 true 时，不允许同时设置 alter-primary-key 为 true。
 
 ### `allow-expression-index` <span class="version-mark">从 v4.0.0 版本开始引入</span>
 

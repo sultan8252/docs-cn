@@ -1,6 +1,6 @@
 ---
 title: TiDB 生态工具功能概览
-aliases: ['/docs-cn/stable/ecosystem-tool-user-guide/','/docs-cn/v4.0/ecosystem-tool-user-guide/','/docs-cn/stable/reference/tools/user-guide/']
+aliases: ['/docs-cn/stable/ecosystem-tool-user-guide/','/docs-cn/v4.0/ecosystem-tool-user-guide/','/docs-cn/stable/reference/tools/user-guide/','/docs-cn/stable/how-to/migrate/incrementally-from-mysql/']
 ---
 
 # TiDB 生态工具功能概览
@@ -63,7 +63,7 @@ aliases: ['/docs-cn/stable/ecosystem-tool-user-guide/','/docs-cn/v4.0/ecosystem-
 
 ## 数据迁入
 
-[TiDB Data Migration (DM)](https://docs.pingcap.com/zh/tidb-data-migration/v1.0/overview) 是将 MySQL/MariaDB 数据迁移到 TiDB 的工具，支持全量数据和增量数据的迁移。
+[TiDB Data Migration (DM)](https://docs.pingcap.com/zh/tidb-data-migration/v2.0/overview) 是将 MySQL/MariaDB 数据迁移到 TiDB 的工具，支持全量数据和增量数据的迁移。
 
 基本信息：
 

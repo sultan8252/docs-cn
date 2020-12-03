@@ -5,7 +5,7 @@ aliases: ['/docs-cn/stable/tidb-lightning/deploy-tidb-lightning/','/docs-cn/v4.0
 
 # TiDB Lightning 部署与执行
 
-本文主要介绍 TiDB Lightning 使用 Local-backend（默认）进行数据导入的硬件需求，以及使用 TiDB Ansible 部署与手动部署 TiDB Lightning 这两种部署方式。
+本文主要介绍 TiDB Lightning 使用 Local-backend 进行数据导入的硬件需求，以及使用 TiDB Ansible 部署与手动部署 TiDB Lightning 这两种部署方式。
 
 如果你不希望影响 TiDB 集群的对外服务，可以参考 [TiDB Lightning TiDB-backend](/tidb-lightning/tidb-lightning-backends.md#tidb-lightning-tidb-backend) 中的硬件需求与部署方式进行数据导入。
 
@@ -54,21 +54,20 @@ aliases: ['/docs-cn/stable/tidb-lightning/deploy-tidb-lightning/','/docs-cn/v4.0
 
 ## 导出数据
 
-使用 [`mydumper`](/mydumper-overview.md) 从 MySQL 导出数据，如下：
+使用 [`dumpling`](/dumpling-overview.md) 从 MySQL 导出数据，如下：
 
 {{< copyable "shell-regular" >}}
 
 ```sh
-./bin/mydumper -h 127.0.0.1 -P 3306 -u root -t 16 -F 256 -B test -T t1,t2 --skip-tz-utc -o /data/my_database/
+./bin/dumpling -h 127.0.0.1 -P 3306 -u root -t 16 -F 256MB -B test -f 'test.t[12]' -o /data/my_database/
 ```
 
 其中：
 
 - `-B test`：从 `test` 数据库导出。
-- `-T t1,t2`：只导出 `t1` 和 `t2` 这两个表。
+- `-f test.t[12]`：只导出 `test.t1` 和 `test.t2` 这两个表。
 - `-t 16`：使用 16 个线程导出数据。
-- `-F 256`：将每张表切分成多个文件，每个文件大小约为 256 MB。
-- `--skip-tz-utc`：添加这个参数则会忽略掉 TiDB 与导数据的机器之间时区设置不一致的情况，禁止自动转换。
+- `-F 256MB`：将每张表切分成多个文件，每个文件大小约为 256 MB。
 
 如果数据源是 CSV 文件，请参考 [CSV 支持](/tidb-lightning/migrate-from-csv-using-tidb-lightning.md)获取配置信息。
 
@@ -101,7 +100,7 @@ TiDB Lightning 可随 TiDB 集群一起用 [TiDB Ansible 部署](/online-deploym
         # 提供监控告警的端口。需对监控服务器 (monitoring_server) 开放。
         tidb_lightning_pprof_port: 8289
 
-        # 获取数据源（Mydumper SQL dump 或 CSV）的路径。
+        # 获取数据源（Dumpling SQL dump 或 CSV）的路径。
         data_source_dir: "{{ deploy_dir }}/mydumper"
         ```
 
@@ -124,6 +123,10 @@ TiDB Lightning 可随 TiDB 集群一起用 [TiDB Ansible 部署](/online-deploym
     backend = "local"
     # 设置排序的键值对的临时存放地址，目标路径需要是一个空目录
     "sorted-kv-dir" = "/mnt/ssd/sorted-kv-dir"
+    
+    [tidb]
+    # pd-server 的地址，填一个即可
+    pd-addr = "172.16.31.4:2379"
     ```
 
 6. 登录 `tidb-lightning` 的服务器，并执行以下命令来启动 Lightning，开始导入过程。
@@ -138,7 +141,7 @@ TiDB Lightning 可随 TiDB 集群一起用 [TiDB Ansible 部署](/online-deploym
 
 #### 第 1 步：部署 TiDB 集群
 
-在开始数据导入之前，需先部署一套要进行导入的 TiDB 集群 (版本要求 2.0.9 以上)，建议使用最新版。部署方法可参考 [使用 TiUP 部署 TiDB 集群](/production-deployment-using-tiup.md)。
+在开始数据导入之前，需先部署一套要进行导入的 TiDB 集群 (版本要求 2.0.9 以上)，建议使用最新版。部署方法可参考[使用 TiUP 部署 TiDB 集群](/production-deployment-using-tiup.md)。
 
 #### 第 2 步：下载 TiDB Lightning 安装包
 
@@ -181,6 +184,8 @@ TiDB Lightning 可随 TiDB 集群一起用 [TiDB Ansible 部署](/online-deploym
     password = ""
     # 表架构信息在从 TiDB 的“状态端口”获取。
     status-port = 10080
+    # pd-server 的地址，填一个即可
+    pd-addr = "172.16.31.4:2379"
     ```
 
     上面仅列出了 `tidb-lightning` 的基本配置信息。完整配置信息请参考[`tidb-lightning` 配置说明](/tidb-lightning/tidb-lightning-configuration.md#tidb-lightning-全局配置)。

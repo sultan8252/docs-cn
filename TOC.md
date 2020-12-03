@@ -46,12 +46,12 @@
 + 数据迁移
   + [概述](/migration-overview.md)
   + 从 MySQL 迁移至 TiDB
-    + [从 Mydumper 文件迁移](/migrate-from-mysql-mydumper-files.md)
+    + [使用 Dumpling 与 TiDB Lightning 进行全量迁移](/migrate-from-mysql-dumpling-files.md)
     + [使用 DM 工具从 Amazon Aurora MySQL 迁移](/migrate-from-aurora-mysql-database.md)
   + 从 CSV 文件迁移至 TiDB
     + [使用 TiDB Lightning 导入 CSV 文件](/tidb-lightning/migrate-from-csv-using-tidb-lightning.md)
     + [使用 LOAD DATA 语句导入 CSV 文件](/sql-statements/sql-statement-load-data.md)
-  + [从 SQL 文件迁移到 TiDB](/migrate-from-mysql-mydumper-files.md)
+  + [从 SQL 文件迁移到 TiDB](/migrate-from-mysql-dumpling-files.md)
 + 运维操作
   + 升级 TiDB 版本
     + [使用 TiUP 升级（推荐）](/upgrade-tidb-using-tiup.md)
@@ -72,7 +72,6 @@
   + [读取历史数据](/read-historical-data.md)
   + [修改时区](/configure-time-zone.md)
   + [日常巡检](/daily-check.md)
-  + [TiCDC 运维操作及任务管理](/ticdc/manage-ticdc.md)
   + [TiFlash 常用运维操作](/tiflash/maintain-tiflash.md)
   + [TiUP 常用运维操作](/maintain-tidb-using-tiup.md)
   + [Ansible 常用运维操作](/maintain-tidb-using-ansible.md)
@@ -85,6 +84,7 @@
   + [TiFlash 报警规则与处理方法](/tiflash/tiflash-alert-rules.md)
 + 故障诊断
   + [定位慢查询](/identify-slow-queries.md)
+  + [分析慢查询](/analyze-slow-queries.md)
   + [SQL 诊断](/information-schema/information-schema-sql-diagnostics.md)
   + [定位消耗系统资源多的查询](/identify-expensive-queries.md)
   + [SQL 语句统计](/statement-summary-tables.md)
@@ -95,7 +95,6 @@
   + [写冲突与写性能下降](/troubleshoot-write-conflicts.md)
   + [磁盘 I/O 过高](/troubleshoot-high-disk-io.md)
   + [锁冲突与 TTL 超时](/troubleshoot-lock-conflicts.md)
-  + [TiCDC 常见问题](/ticdc/troubleshoot-ticdc.md)
   + [TiFlash 常见问题](/tiflash/troubleshoot-tiflash.md)
 + 性能调优
   + 系统调优
@@ -110,9 +109,10 @@
     + [下推计算结果缓存](/coprocessor-cache.md)
   + SQL 性能调优
     + [SQL 性能调优概览](/sql-tuning-overview.md)
-    + [理解 TiDB 执行计划](/query-execution-plan.md)
-    + SQL 优化
-      + [SQL 优化流程简介](/sql-optimization-concepts.md)
+    + 理解 TiDB 执行计划
+      + [TiDB 执行计划概览](/explain-overview.md)
+    + SQL 优化流程
+      + [SQL 优化流程概览](/sql-optimization-concepts.md)
       + 逻辑优化
         + [逻辑优化概览](/sql-logical-optimization.md)
         + [子查询相关的优化](/subquery-optimization.md)
@@ -130,11 +130,11 @@
         + [错误索引的解决方案](/wrong-index-solution.md)
         + [Distinct 优化](/agg-distinct-optimization.md)
       + [执行计划缓存](/sql-prepare-plan-cache.md)
-      + 控制执行计划
-        + [控制执行计划概览](/control-execution-plan.md)
-        + [Optimizer Hints](/optimizer-hints.md)
-        + [执行计划管理](/sql-plan-management.md)
-        + [优化规则及表达式下推的黑名单](/blacklist-control-plan.md)
+    + 控制执行计划
+      + [控制执行计划概览](/control-execution-plan.md)
+      + [Optimizer Hints](/optimizer-hints.md)
+      + [执行计划管理](/sql-plan-management.md)
+      + [优化规则及表达式下推的黑名单](/blacklist-control-plan.md)
 + 教程
   + [同城多中心部署](/multi-data-centers-in-one-city-deployment.md)
   + [两地三中心部署](/three-data-centers-in-two-cities-deployment.md)
@@ -155,8 +155,8 @@
   + [适用场景](/ecosystem-tool-user-case.md)
   + [工具下载](/download-ecosystem-tools.md)
   + Backup & Restore (BR)
-    + [BR 备份与恢复场景示例](/br/backup-and-restore-use-cases.md)
     + [使用 BR 进行备份和恢复](/br/backup-and-restore-tool.md)
+    + [BR 备份与恢复场景示例](/br/backup-and-restore-use-cases.md)
     + [BR 常见问题](/br/backup-and-restore-faq.md)
   + TiDB Binlog
     + [概述](/tidb-binlog/tidb-binlog-overview.md)
@@ -187,13 +187,19 @@
       + [断点续传](/tidb-lightning/tidb-lightning-checkpoints.md)
       + [表库过滤](/table-filter.md)
       + [CSV 支持](/tidb-lightning/migrate-from-csv-using-tidb-lightning.md)
-      + [导入模式](/tidb-lightning/tidb-lightning-backends.md)
+      + [后端](/tidb-lightning/tidb-lightning-backends.md)
       + [Web 界面](/tidb-lightning/tidb-lightning-web-interface.md)
     + [监控告警](/tidb-lightning/monitor-tidb-lightning.md)
     + [故障诊断](/troubleshoot-tidb-lightning.md)
     + [FAQ](/tidb-lightning/tidb-lightning-faq.md)
     + [术语表](/tidb-lightning/tidb-lightning-glossary.md)
-  + [TiCDC](/ticdc/ticdc-overview.md)
+  + TiCDC
+    + [概述](/ticdc/ticdc-overview.md)
+    + [安装部署](/ticdc/deploy-ticdc.md)
+    + [运维管理](/ticdc/manage-ticdc.md)
+    + [故障诊断](/ticdc/troubleshoot-ticdc.md)
+    + [TiCDC Open Protocol](/ticdc/ticdc-open-protocol.md)
+    + [将 TiDB 集成到 Confluent Platform](/ticdc/integrate-confluent-using-ticdc.md)
   + [Dumpling](/dumpling-overview.md)
   + sync-diff-inspector
     + [概述](/sync-diff-inspector/sync-diff-inspector-overview.md)
@@ -245,6 +251,10 @@
       - [`ADD COLUMN`](/sql-statements/sql-statement-add-column.md)
       - [`ADD INDEX`](/sql-statements/sql-statement-add-index.md)
       - [`ADMIN`](/sql-statements/sql-statement-admin.md)
+      - [`ADMIN CANCEL DDL`](/sql-statements/sql-statement-admin-cancel-ddl.md)
+      - [`ADMIN CHECKSUM TABLE`](/sql-statements/sql-statement-admin-checksum-table.md)
+      - [`ADMIN CHECK [TABLE|INDEX]`](/sql-statements/sql-statement-admin-check-table-index.md)
+      - [`ADMIN SHOW DDL [JOBS|QUERIES]`](/sql-statements/sql-statement-admin-show-ddl.md)
       - [`ALTER DATABASE`](/sql-statements/sql-statement-alter-database.md)
       - [`ALTER INSTANCE`](/sql-statements/sql-statement-alter-instance.md)
       - [`ALTER TABLE`](/sql-statements/sql-statement-alter-table.md)
@@ -256,9 +266,10 @@
       - [`CHANGE DRAINER`](/sql-statements/sql-statement-change-drainer.md)
       - [`CHANGE PUMP`](/sql-statements/sql-statement-change-pump.md)
       - [`COMMIT`](/sql-statements/sql-statement-commit.md)
-      - [`CREATE BINDING`](/sql-statements/sql-statement-create-binding.md)
+      - [`CREATE [GLOBAL|SESSION] BINDING`](/sql-statements/sql-statement-create-binding.md)
       - [`CREATE DATABASE`](/sql-statements/sql-statement-create-database.md)
       - [`CREATE INDEX`](/sql-statements/sql-statement-create-index.md)
+      - [`CREATE ROLE`](/sql-statements/sql-statement-create-role.md)
       - [`CREATE SEQUENCE`](/sql-statements/sql-statement-create-sequence.md)
       - [`CREATE TABLE LIKE`](/sql-statements/sql-statement-create-table-like.md)
       - [`CREATE TABLE`](/sql-statements/sql-statement-create-table.md)
@@ -269,10 +280,11 @@
       - [`DESC`](/sql-statements/sql-statement-desc.md)
       - [`DESCRIBE`](/sql-statements/sql-statement-describe.md)
       - [`DO`](/sql-statements/sql-statement-do.md)
-      - [`DROP BINDING`](/sql-statements/sql-statement-drop-binding.md)
+      - [`DROP [GLOBAL|SESSION] BINDING`](/sql-statements/sql-statement-drop-binding.md)
       - [`DROP COLUMN`](/sql-statements/sql-statement-drop-column.md)
       - [`DROP DATABASE`](/sql-statements/sql-statement-drop-database.md)
       - [`DROP INDEX`](/sql-statements/sql-statement-drop-index.md)
+      - [`DROP ROLE`](/sql-statements/sql-statement-drop-role.md)
       - [`DROP SEQUENCE`](/sql-statements/sql-statement-drop-sequence.md)
       - [`DROP STATS`](/sql-statements/sql-statement-drop-stats.md)
       - [`DROP TABLE`](/sql-statements/sql-statement-drop-table.md)
@@ -286,6 +298,7 @@
       - [`FLUSH STATUS`](/sql-statements/sql-statement-flush-status.md)
       - [`FLUSH TABLES`](/sql-statements/sql-statement-flush-tables.md)
       - [`GRANT <privileges>`](/sql-statements/sql-statement-grant-privileges.md)
+      - [`GRANT <role>`](/sql-statements/sql-statement-grant-role.md)
       - [`INSERT`](/sql-statements/sql-statement-insert.md)
       - [`KILL [TIDB]`](/sql-statements/sql-statement-kill.md)
       - [`LOAD DATA`](/sql-statements/sql-statement-load-data.md)
@@ -298,8 +311,10 @@
       - [`REPLACE`](/sql-statements/sql-statement-replace.md)
       - [`RESTORE`](/sql-statements/sql-statement-restore.md)
       - [`REVOKE <privileges>`](/sql-statements/sql-statement-revoke-privileges.md)
+      - [`REVOKE <role>`](/sql-statements/sql-statement-revoke-role.md)
       - [`ROLLBACK`](/sql-statements/sql-statement-rollback.md)
       - [`SELECT`](/sql-statements/sql-statement-select.md)
+      - [`SET DEFAULT ROLE`](/sql-statements/sql-statement-set-default-role.md)
       - [`SET [NAMES|CHARACTER SET]`](/sql-statements/sql-statement-set-names.md)
       - [`SET PASSWORD`](/sql-statements/sql-statement-set-password.md)
       - [`SET ROLE`](/sql-statements/sql-statement-set-role.md)
@@ -307,7 +322,7 @@
       - [`SET [GLOBAL|SESSION] <variable>`](/sql-statements/sql-statement-set-variable.md)
       - [`SHOW [BACKUPS|RESTORES]`](/sql-statements/sql-statement-show-backups.md)
       - [`SHOW ANALYZE STATUS`](/sql-statements/sql-statement-show-analyze-status.md)
-      - [`SHOW BINDINGS`](/sql-statements/sql-statement-show-bindings.md)
+      - [`SHOW [GLOBAL|SESSION] BINDINGS`](/sql-statements/sql-statement-show-bindings.md)
       - [`SHOW BUILTINS`](/sql-statements/sql-statement-show-builtins.md)
       - [`SHOW CHARACTER SET`](/sql-statements/sql-statement-show-character-set.md)
       - [`SHOW COLLATION`](/sql-statements/sql-statement-show-collation.md)
@@ -332,6 +347,7 @@
       - [`SHOW PROFILES`](/sql-statements/sql-statement-show-profiles.md)
       - [`SHOW PUMP STATUS`](/sql-statements/sql-statement-show-pump-status.md)
       - [`SHOW SCHEMAS`](/sql-statements/sql-statement-show-schemas.md)
+      - [`SHOW STATS_HEALTHY`](/sql-statements/sql-statement-show-stats-healthy.md)
       - [`SHOW STATS_HISTOGRAMS`](/sql-statements/sql-statement-show-histograms.md)
       - [`SHOW STATS_META`](/sql-statements/sql-statement-show-stats-meta.md)
       - [`SHOW STATUS`](/sql-statements/sql-statement-show-status.md)
@@ -441,6 +457,7 @@
       + [概况页面](/dashboard/dashboard-overview.md)
       + [集群信息页面](/dashboard/dashboard-cluster-info.md)
       + [流量可视化页面](/dashboard/dashboard-key-visualizer.md)
+      + [监控关系图](/dashboard/dashboard-metrics-relation.md)
       + SQL 语句分析
         + [列表页面](/dashboard/dashboard-statement-list.md)
         + [执行详情页面](/dashboard/dashboard-statement-details.md)
@@ -492,8 +509,6 @@
       + [tiup-bench 进行 TPCC/TPCH 压力测试](/tiup/tiup-bench.md)
   + [遥测](/telemetry.md)
   + [错误码](/error-codes.md)
-  + [TiCDC 简介](/ticdc/ticdc-overview.md)
-  + [TiCDC 开放数据协议](/ticdc/ticdc-open-protocol.md)
   + [通过拓扑 label 进行副本调度](/schedule-replicas-by-topology-labels.md)
 + 常见问题解答 (FAQ)
   + [产品 FAQ](/faq/tidb-faq.md)
@@ -507,6 +522,10 @@
 + 版本发布历史
   + [发布版本汇总](/releases/release-notes.md)
   + v4.0
+    - [4.0.8](/releases/release-4.0.8.md)
+    - [4.0.7](/releases/release-4.0.7.md)
+    - [4.0.6](/releases/release-4.0.6.md)
+    - [4.0.5](/releases/release-4.0.5.md)
     - [4.0.4](/releases/release-4.0.4.md)
     - [4.0.3](/releases/release-4.0.3.md)
     - [4.0.2](/releases/release-4.0.2.md)
@@ -527,6 +546,8 @@
     - [3.1.0-beta.1](/releases/release-3.1.0-beta.1.md)
     - [3.1.0-beta](/releases/release-3.1.0-beta.md)
   + v3.0
+    - [3.0.19](/releases/release-3.0.19.md)
+    - [3.0.18](/releases/release-3.0.18.md)
     - [3.0.17](/releases/release-3.0.17.md)
     - [3.0.16](/releases/release-3.0.16.md)
     - [3.0.15](/releases/release-3.0.15.md)

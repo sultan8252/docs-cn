@@ -219,13 +219,19 @@ TiSpark 目前提供类似 TiDB 中 engine 隔离的方式读取 TiFlash，方�
 >
 > TiDB 4.0.2 版本之前，TiFlash 不支持 TiDB 新排序规则框架，所以在 TiDB 开启[新框架下的排序规则支持](/character-set-and-collation.md#新框架下的排序规则支持)后不支持任何表达式的下推，TiDB 4.0.2 以及后续的版本取消了这个限制。
 
-TiFlash 主要支持谓词、聚合下推计算，下推的计算可以帮助 TiDB 进行分布式加速。暂不支持的计算类型主要是表连接和 DISTINCT COUNT，会在后续版本逐步优化。
+TiFlash 支持谓词、聚合下推计算以及表连接，下推的计算可以帮助 TiDB 进行分布式加速。暂不支持的计算类型是 `Full Outer Join` 和 `DISTINCT COUNT`，会在后续版本逐步优化。
+
+目前下推连接 (`Join`) 的功能需要通过以下会话变量开启（暂不支持 `Full Outer Join`）：
+
+```
+set @@session.tidb_opt_broadcast_join=1
+```
 
 目前 TiFlash 支持了有限的常用表达式下推，支持下推的表达式包括：
 
 ```
 +, -, /, *, >=, <=, =, !=, <, >, ifnull, isnull, bitor, in, mod, bitand, or, and, like, not,
-case when, month, substr, timestampdiff, date_format, from_unixtime, json_length, if, bitneg, bitxor, cast(int as decimal), date_add(datetime, int), date_add(datetime, string)
+case when, month, substr, timestampdiff, date_format, from_unixtime, json_length, if, bitneg, bitxor, round without fraction, cast(int as decimal), date_add(datetime, int), date_add(datetime, string)
 ```
 
 其中，`cast` 和 `date_add` 的下推默认不开启，若需要手动开启，请参考[优化规则及表达式下推的黑名单](/blacklist-control-plan.md)

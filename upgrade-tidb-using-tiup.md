@@ -1,6 +1,6 @@
 ---
 title: 使用 TiUP 升级 TiDB
-aliases: ['/docs-cn/stable/upgrade-tidb-using-tiup/','/docs-cn/v4.0/upgrade-tidb-using-tiup/','/docs-cn/stable/how-to/upgrade/using-tiup/']
+aliases: ['/docs-cn/stable/upgrade-tidb-using-tiup/','/docs-cn/v4.0/upgrade-tidb-using-tiup/','/docs-cn/stable/how-to/upgrade/using-tiup/','/docs-cn/v4.0/how-to/upgrade/using-tiup/']
 ---
 
 # 使用 TiUP 升级 TiDB
@@ -157,7 +157,7 @@ tiup update cluster
 >        ```yaml
 >          tiflash_servers:
 >            - host: 10.0.1.14
->              data_dir: data/tiflash-11315 # 修改为 TiFlash 配置文件的 `path` 值
+>              data_dir: /data/tiflash-11315 # 修改为 TiFlash 配置文件的 `path` 值
 >        ```
 
 ## 4. 滚动升级 TiDB 集群

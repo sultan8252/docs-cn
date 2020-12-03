@@ -1,6 +1,6 @@
 ---
 title: 使用 TiUP 扩容缩容 TiDB 集群
-aliases: ['/docs-cn/stable/scale-tidb-using-tiup/','/docs-cn/v4.0/scale-tidb-using-tiup/','/docs-cn/stable/how-to/scale/with-tiup/']
+aliases: ['/docs-cn/stable/scale-tidb-using-tiup/','/docs-cn/v4.0/scale-tidb-using-tiup/','/docs-cn/stable/how-to/scale/with-tiup/','/docs-cn/stable/reference/tiflash/scale/','/docs-cn/v4.0/reference/tiflash/scale/']
 ---
 
 # 使用 TiUP 扩容缩容 TiDB 集群
@@ -13,7 +13,7 @@ TiDB 集群可以在不中断线上服务的情况下进行扩容和缩容。
 
 例如，集群原拓扑结构如下所示：
 
-| 主机 IP   | 服务   | 
+| 主机 IP   | 服务   |
 |:----|:----|
 | 10.0.1.3   | TiDB + TiFlash   |
 | 10.0.1.4   | TiDB + PD   | 
@@ -374,7 +374,7 @@ tiup cluster display <cluster-name>
 
 2. 在 pd-ctl 中下线该 TiFlash 节点。
 
-    * 在 pd-ctl 中输入 `store delete <store_id>`，其中 <store_id> 为上一步查到的该 TiFlash 节点对应的 store id。
+    * 在 pd-ctl 中输入 `store delete <store_id>`，其中 `<store_id>` 为上一步查到的该 TiFlash 节点对应的 store id。
 
     * 若通过 TiUP 部署，可以调用以下命令代替 `pd-ctl`：
 

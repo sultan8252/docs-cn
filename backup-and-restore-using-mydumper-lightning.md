@@ -1,6 +1,6 @@
 ---
 title: 使用 Mydumper/TiDB Lightning 进行备份与恢复
-aliases: ['/docs-cn/stable/backup-and-restore-using-mydumper-lightning/','/docs-cn/v4.0/backup-and-restore-using-mydumper-lightning/','/docs-cn/stable/how-to/maintain/backup-and-restore/mydumper-lightning/']
+aliases: ['/docs-cn/stable/backup-and-restore-using-mydumper-lightning/','/docs-cn/v4.0/backup-and-restore-using-mydumper-lightning/','/docs-cn/stable/how-to/maintain/backup-and-restore/mydumper-lightning/','/docs-cn/v4.0/how-to/maintain/backup-and-restore/mydumper-lightning/']
 ---
 
 # 使用 Mydumper/TiDB Lightning 进行备份与恢复
@@ -78,7 +78,7 @@ aliases: ['/docs-cn/stable/backup-and-restore-using-mydumper-lightning/','/docs-
     {{< copyable "sql" >}}
 
     ```sql
-    update mysql.tidb set VARIABLE_VALUE = '720h' where VARIABLE_NAME = 'tikv_gc_life_time';
+    UPDATE mysql.tidb SET VARIABLE_VALUE = '720h' WHERE VARIABLE_NAME = 'tikv_gc_life_time';
     ```
 
 2. 执行 `mydumper` 命令后，将 TiDB 集群的 GC 值恢复到第 1 步中的初始值：
@@ -86,7 +86,7 @@ aliases: ['/docs-cn/stable/backup-and-restore-using-mydumper-lightning/','/docs-
     {{< copyable "sql" >}}
 
     ```sql
-    update mysql.tidb set VARIABLE_VALUE = '10m' where VARIABLE_NAME = 'tikv_gc_life_time';
+    UPDATE mysql.tidb SET VARIABLE_VALUE = '10m' WHERE VARIABLE_NAME = 'tikv_gc_life_time';
     ```
 
 ## 向 TiDB 恢复数据

@@ -16,6 +16,39 @@ TiKV 配置文件比命令行参数支持更多的选项。你可以在 [etc/con
 + 默认值：1
 + 最小值：1
 
+### `server.concurrent-send-snap-limit`
+
++ 同时发送 snapshot 的最大个数。
++ 默认值：32
++ 最小值：1
+
+### `server.concurrent-recv-snap-limit`
+
++ 同时接受 snapshot 的最大个数。
++ 默认值：32
++ 最小值：1
+
+### `server.end-point-recursion-limit`
+
++ endpoint 下推查询请求解码消息时，最多允许的递归层数。
++ 默认值：1000
++ 最小值：1
+
+### `server.end-point-request-max-handle-duration`
+
++ endpoint 下推查询请求处理任务最长允许的时长。
++ 默认值：60s
++ 最小值：1s
+
+### `server.snap-max-write-bytes-per-sec`
+
++ 处理 snapshot 时最大允许使用的磁盘带宽。
++ 默认值：1000MB
++ 单位：KB|MB|GB
++ 最小值：1KB
+
+## gRPC
+
 ### `grpc-compression-type`
 
 + gRPC 消息的压缩算法，取值：none， deflate， gzip。
@@ -32,6 +65,12 @@ TiKV 配置文件比命令行参数支持更多的选项。你可以在 [etc/con
 + 一个 gRPC 链接中最多允许的并发请求数量。
 + 默认值：1024
 + 最小值：1
+
+### `grpc-memory-pool-quota`
+
++ gRPC 可使用的内存大小限制。
++ 默认值: 32G
++ 建议仅在出现内存不足 (OOM) 的情况下限制内存使用。需要注意，限制内存使用可能会导致卡顿。
 
 ### `server.grpc-raft-conn-num`
 
@@ -57,37 +96,6 @@ TiKV 配置文件比命令行参数支持更多的选项。你可以在 [etc/con
 + 关闭 gRPC 链接的超时时长。
 + 默认值：3s
 + 最小值：1s
-
-### `server.concurrent-send-snap-limit`
-
-+ 同时发送 snapshot 的最大个数，默认值：32
-+ 默认值：32
-+ 最小值：1
-
-### `server.concurrent-recv-snap-limit`
-
-+ 同时接受 snapshot 的最大个数，默认值：32
-+ 默认值：32
-+ 最小值：1
-
-### `server.end-point-recursion-limit`
-
-+ endpoint 下推查询请求解码消息时，最多允许的递归层数。
-+ 默认值：1000
-+ 最小值：1
-
-### `server.end-point-request-max-handle-duration`
-
-+ endpoint 下推查询请求处理任务最长允许的时长。
-+ 默认值：60s
-+ 最小值：1s
-
-### `server.snap-max-write-bytes-per-sec`
-
-+ 处理 snapshot 时最大允许使用的磁盘带宽
-+ 默认值：1000MB
-+ 单位：KB|MB|GB
-+ 最小值：1KB
 
 ## readpool.unified
 
@@ -229,12 +237,6 @@ Coprocessor 线程池中线程的栈大小，默认值：10，单位：KiB|MiB|G
 
 存储相关的配置项。
 
-### `scheduler-notify-capacity`
-
-+ scheduler 一次获取最大消息个数
-+ 默认值：10240
-+ 最小值：1
-
 ### `scheduler-concurrency`
 
 + scheduler 内置一个内存锁机制，防止同时对一个 key 进行操作。每个 key hash 到不同的槽。
@@ -280,8 +282,12 @@ raftstore 相关的配置项。
 
 ### `sync-log`
 
-+ 数据、log 落盘是否 sync，注意：设置成 false 可能会丢数据。
++ 数据、log 落盘是否 sync。
 + 默认值：true
+
+> **警告：**
+>
+> 将该值设置为 false 可能会导致**数据丢失**。因此**强烈建议**不要修改此配置。
 
 ### `prevote`
 
@@ -643,10 +649,16 @@ rocksdb 相关的配置项。
 + 默认值：8
 + 最小值：1
 
+### `max-background-flushes`
+
++ RocksDB 用于刷写 memtable 的最大后台线程数。
++ 默认值：2
++ 最小值：1
+
 ### `max-sub-compactions`
 
 + RocksDB 进行 subcompaction 的并发个数。
-+ 默认值：1
++ 默认值：3
 + 最小值：1
 
 ### `max-open-files`
@@ -769,8 +781,8 @@ rocksdb 相关的配置项。
 
 ### `info-log-roll-time`
 
-+ 日志截断间隔时间，如果为0则不截断。
-+ 默认值：0
++ 日志截断间隔时间，如果为 0s 则不截断。
++ 默认值：0s
 
 ### `info-log-keep-log-file-num`
 
@@ -1110,7 +1122,7 @@ raftdb 相关配置项。
 ### `max-sub-compactions`
 
 + RocksDB 进行 subcompaction 的并发数。
-+ 默认值：1
++ 默认值：2
 + 最小值：1
 
 ### `wal-dir`
@@ -1136,6 +1148,11 @@ raftdb 相关配置项。
 
 + 包含 X509 key 的 PEM 文件路径
 + 默认值：""
+
+### `redact-info-log`
+
++ 若开启该选项，日志中的用户数据会以 `?` 代替。
++ 默认值：`false`
 
 ## import
 
@@ -1178,7 +1195,7 @@ raftdb 相关配置项。
 
 ### `wait-up-delay-duration`
 
-+ 悲观事务释放锁时，只会唤醒等锁事务中 `start_ts` 最小的事务，其他事务将会延迟 `wake-up-delay-duration` 之后被唤醒。
++ 悲观事务释放锁时，只会唤醒等锁事务中 `start_ts` 最小的事务，其他事务将会延迟 `wait-up-delay-duration` 之后被唤醒。
 + 默认值：20ms
 
 ### `pipelined`
