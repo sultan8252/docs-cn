@@ -468,7 +468,7 @@ TiKV 的内存占用主要来自于 RocksDB 的 block-cache，默认为系统总
 #### TiDB 集群容量 QPS 与节点数之间关系如何，和 MySQL 对比如何？
 
 - 在 10 节点内，TiDB 写入能力（Insert TPS）和节点数量基本成 40% 线性递增，MySQL 由于是单节点写入，所以不具备写入扩展能力。
-- MySQL 读扩容可以通过添加从库进行扩展，但写流量无法扩展，只能通过分库分表，而分库分表有很多问题，具体参考[方案虽好，成本先行：数据库 Sharding+Proxy 实践解析](http://t.cn/RTD18qV)。
+- MySQL 读扩容可以通过添加从库进行扩展，但写流量无法扩展，只能通过分库分表，而分库分表有很多问题，具体参考[方案虽好，成本先行：数据库 Sharding+Proxy 实践解析](http://dbaplus.cn/news-11-1854-1.html)。
 - TiDB 不管是读流量、还是写流量都可以通过添加节点快速方便的进行扩展。
 
 #### 我们的 DBA 测试过 MySQL 性能，单台 TiDB 的性能没有 MySQL 性能那么好？
@@ -479,11 +479,9 @@ TiDB 设计的目标就是针对 MySQL 单台容量限制而被迫做的分库�
 
 #### TiDB 主要备份方式？
 
-目前，推荐的备份方式是使用 [PingCAP fork 的 Mydumper](/mydumper-overview.md)。尽管 TiDB 也支持使用 MySQL 官方工具 `mysqldump` 进行数据备份、恢复，但其性能低于 [`mydumper`](/mydumper-overview.md)/[`loader`](/loader-overview.md)，并且该工具备份、恢复大量数量时，要耗费更多时间。
+目前，数据量大时推荐使用 [BR](/br/backup-and-restore-tool.md) 进行备份。其他场景推荐使用 [Dumpling](/dumpling-overview.md) 进行备份。
 
-使用 Mydumper 导出来的数据文件尽可能的小, 最好不要超过 64M, 可以设置参数 -F 64；
-
-loader 的 -t 参数可以根据 TiKV 的实例个数以及负载进行评估调整，例如 3 个 TiKV 的场景， 此值可以设为 3 * (1 ～ n)，当 TiKV 负载过高，loader 以及 TiDB 日志中出现大量 `backoffer.maxSleep 15000ms is exceeded` 可以适当调小该值，当 TiKV 负载不是太高的时候，可以适当调大该值。
+尽管 TiDB 也支持使用 MySQL 官方工具 `mysqldump` 进行数据备份和恢复，但其性能低于 [Dumpling](/dumpling-overview.md)，并且 `mysqldump` 备份和恢复大量数据的耗费更长。
 
 ## 监控 FAQ
 
